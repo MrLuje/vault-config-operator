@@ -52,7 +52,7 @@ Any manual data change or deletion of the K8s Secret owned by a VaultSecret CR w
 > Note: if reading a dynamic secret you typically care to set the `refreshThreshold` only (not the `refreshPeriod`). For just Key/Value Vault secrets, set the `refreshPeriod`.
 > See <https://www.vaultproject.io/docs/concepts/lease> to understand lease durations.
 
-- `refreshPeriod` the pull interval for syncing Vault secrets with the K8s Secret. This settings takes precedence over any lease duration returned by vault, effectively controlling when exactly all vault secrets defined in the vaultSecretDefinitions should re-sync.
+- `refreshPeriod` the pull interval for syncing Vault secrets with the K8s Secret. This settings takes precedence over any lease duration returned by vault, effectively controlling when exactly all vault secrets defined in the vaultSecretDefinitions should re-sync. Implicit *lease_duration* based on secret's ttl isn't working for KV Secrets Engine V2 and must be explicitly set to prevent refresh constantly. 
 - `refreshThreshold` this is will instruct the operator to refresh the K8s Secret when a percentage of the lease duration has elapsed, if no `refreshPeriod` is specified. This is particularly useful for controlling when dynamic secrets should be refreshed before the lease duration is exceeded. The default is 90, meaning the secret would refresh after 90% of the time has passed from the vault secret's lease duration. When multiple vaultSecretDefinitions are defined, the smallest lease duration will be used when performing the scheduling for the next refresh.
 - `vaultSecretDefinitions` is an array of Vault Secret References. Every `vaultSecretDefinition` has...
   - [authentication](#the-authentication-section) section.
